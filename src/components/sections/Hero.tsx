@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { m, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { Profile } from "@/lib/content";
@@ -18,6 +19,12 @@ const item = {
 };
 
 export function Hero({ profile }: { profile?: Profile | null }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const x = useMotionValue(0);
   const y = useMotionValue(0);
 
@@ -104,8 +111,8 @@ export function Hero({ profile }: { profile?: Profile | null }) {
               <div className="absolute w-[500px] h-[500px] border-2 border-accent rounded-full opacity-40" />
             </m.div>
 
-            {/* Floating Energy Particles */}
-            {[...Array(12)].map((_, i) => (
+            {/* Floating Energy Particles (Client-Side Only to prevent hydration mismatch) */}
+            {mounted && [...Array(12)].map((_, i) => (
               <m.div
                 key={i}
                 animate={{ 
