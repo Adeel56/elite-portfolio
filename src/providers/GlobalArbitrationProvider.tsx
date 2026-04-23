@@ -27,7 +27,12 @@ export function GlobalArbitrationProvider({ children }: { children: React.ReactN
     const measureFPS = (currentTime: number) => {
       frameCount++;
       if (currentTime - lastTime >= 1000) {
-        setFps(frameCount);
+        const newFps = frameCount;
+        setFps(prev => {
+          const delta = Math.abs(prev - newFps);
+          const crossedBoundary = (prev >= 45 && newFps < 45) || (prev < 45 && newFps >= 45);
+          return (delta > 5 || crossedBoundary) ? newFps : prev;
+        });
         frameCount = 0;
         lastTime = currentTime;
       }

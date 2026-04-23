@@ -43,21 +43,9 @@ function Particles({ count = 5000 }: { count?: number }) {
     points.current.rotation.y += delta * currentSpeed.current;
     points.current.rotation.x += delta * (currentSpeed.current * 0.5);
 
-    // Neural fluid wave effect via positions
-    const positionsAttr = points.current.geometry.attributes.position;
-    const time = state.clock.getElapsedTime();
-    
-    for (let i = 0; i < count; i++) {
-      const ix = i * 3;
-      const iy = i * 3 + 1;
-      const iz = i * 3 + 2;
-      
-      // Organic sine wave distortion
-      positionsAttr.array[ix] += Math.sin(time * 0.5 + randoms[i] * 10) * 0.01 * currentSpeed.current;
-      positionsAttr.array[iy] += Math.cos(time * 0.6 + randoms[i] * 10) * 0.01 * currentSpeed.current;
-      positionsAttr.array[iz] += Math.sin(time * 0.7 + randoms[i] * 10) * 0.01 * currentSpeed.current;
-    }
-    positionsAttr.needsUpdate = true;
+    // Removed CPU-bound sine wave distortion. 
+    // Updating 5000 buffer positions and uploading to GPU every frame 
+    // is extremely expensive and causes thermal throttling/heating.
     
     // Dim when hovering
     if (materialRef.current) {
